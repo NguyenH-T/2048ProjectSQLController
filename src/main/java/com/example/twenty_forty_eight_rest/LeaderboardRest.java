@@ -1,6 +1,10 @@
 package com.example.twenty_forty_eight_rest;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.xml.crypto.Data;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,19 +12,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 public class LeaderboardRest {
+
+    private final DatabaseController db;
+    
+    public LeaderboardRest(DatabaseController db) {
+        this.db = db;
+    }
     
     @GetMapping("/scores")
-    public String getMethodName(@RequestParam(value = "sort", defaultValue = "score") String sort) {
+    public String getMethodName(@RequestParam(value = "sortState", defaultValue = "score") String sortState) {
 
-        //TEMP. Actual implementation later
-        switch (sort) {
-            case "score":
-                return "{username: John, score: 1283, time: 105}\r\n{username: Doe, score: 1003, time: 93}";
-            case "time":
-                return "{username: Doe, score: 1003, time: 93}\r\n{username: John, score: 1283, time: 105}";
-            default:
-                return "501 not implemented";
-        }
+        //TODO: Actual implementation later
+        return this.db.getAllScores(sortState);
     }
     
     @PostMapping("/submitScore")
