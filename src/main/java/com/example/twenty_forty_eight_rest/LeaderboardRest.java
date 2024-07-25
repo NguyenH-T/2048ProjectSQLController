@@ -23,7 +23,13 @@ public class LeaderboardRest {
     public String getMethodName(@RequestParam(value = "sortState", defaultValue = "score") String sortState) {
 
         //TODO: Actual implementation later
-        return this.db.getAllScores(sortState);
+        switch (sortState) {
+            case "score":
+                return this.db.getAllScores();
+            case "time":
+                return this.db.getAllTimes();
+        }
+        return "";
     }
     
     @PostMapping("/submitScore")
