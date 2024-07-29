@@ -1,10 +1,15 @@
 package com.example.twenty_forty_eight_rest;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.xml.crypto.Data;
+import java.util.Arrays;
 
-import org.springframework.data.domain.Sort;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,24 +24,27 @@ public class LeaderboardRest {
         this.db = db;
     }
     
+    @CrossOrigin(origins = "http://localhost:4200/")
     @GetMapping("/scores")
-    public String getMethodName(@RequestParam(value = "sortState", defaultValue = "score") String sortState) {
-
-        //TODO: Actual implementation later
+    public ResponseEntity<String> getMethodName(
+            @RequestParam(value = "sortState", defaultValue = "score") String sortState) {
         switch (sortState) {
             case "score":
-                return this.db.getAllScores();
+                return ResponseEntity.ok().body(this.db.getAllScores());
             case "time":
-                return this.db.getAllTimes();
+                return ResponseEntity.ok().body(this.db.getAllTimes());
         }
-        return "";
+        return ResponseEntity.badRequest().body("Invalid query");
     }
     
+    @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/submitScore")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return "501 not implemented";
+    public ResponseEntity<String> postMethodName(@RequestBody String entity) {
+        if (this.db.addScore(entity)) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.internalServerError().build();
     }
+    
     
 }

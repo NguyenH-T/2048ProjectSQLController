@@ -19,9 +19,17 @@ public class DatabaseController {
         this.repo = repo;
     }
 
-    public boolean addScore(String username, int score, int time) {
-        this.repo.save(new Score(username, score, time));
-        return true;
+    public boolean addScore(String jsonString) {
+        ObjectMapper objmap = new ObjectMapper();
+        try {
+            Score newScore = objmap.readValue(jsonString, Score.class);
+            this.repo.save(newScore);
+            return true;
+        }
+        catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public String getAllScores() {
